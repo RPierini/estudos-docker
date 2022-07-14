@@ -6,7 +6,7 @@ Docker é uma ferramenta maravilhosa para gerenciar ambientes heterogêneos com 
 
 Nesse primeiro exercício, iremos estudar como buscar uma imagem de um container, criá-lo, vê-lo em execução e depois removê-lo. Para isso, siga os passos e tente compreender cada ocorrência do terminal. Haverá algumas perguntas ao longo dos exercícios com as respostas ocultas logo em seguida, portanto tente pensar a resposta à pergunta primeiro e apenas depois tente ver a resposta descrita.
 
->PERGUNTA: Você entendeu a parte anterior?
+> PERGUNTA: Você entendeu a parte anterior?
 ><details>
 >  <summary> Resposta </summary>
 >  Sim, entendi! Devo pensar minha resposta antes de clicar em "Resposta" após a pergunta para poder comparar o que eu pensei com a resposta correta. É sempre melhor >aprender ativamente do que passivamente!
@@ -123,7 +123,7 @@ Nós também podemos obter informações da execução do nosso container atrav�
 
 Deixe esse comando rodando em um terminal e abra um novo, depois tente responder à pergunta abaixo. Para sair da execução do comando, você deve utilizar a combinação de teclas "CRTL+C"
 
-PERGUNTA: De outro terminal, tente rodar o comando "wget 127.0.0.1" para baixar a página "index.html" padrão do container. O que aconteceu no terminal que estamos acompanhando os logs?
+> PERGUNTA: De outro terminal, tente rodar o comando "wget 127.0.0.1" para baixar a página "index.html" padrão do container. O que aconteceu no terminal que estamos acompanhando os logs?
 > <details>
   >  <summary> Resposta </summary>
   >  O terminal atualizou com os logs das requisições que realizamos, portanto o podemos acompanhar a execução de um container de fora dele!
@@ -133,7 +133,7 @@ Por fim, e se quisermos iniciar um serviço em um container, mas sem precisar re
 
 > docker kill -s HUP apache2_teste
 
-PERGUNTA: tente verificar os logs do container com os comandos que aprendemos antes. O que é exibido no log?
+> PERGUNTA: tente verificar os logs do container com os comandos que aprendemos antes. O que é exibido no log?
 > <details>
   >  <summary> Resposta </summary>
   >  Usando o "docker logs apache2_teste", vemos que o processo principal recebeu um sinal de _Hang Up_ e que portanto reiniciou sua execução. Então podemos reiniciar um serviço em um container sem precisar matar o processo principal e, consequentemente, o container!
