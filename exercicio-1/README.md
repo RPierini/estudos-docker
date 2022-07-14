@@ -108,3 +108,40 @@ Ué, mas pera aí, "Docker Run"? Sim, o comando "docker run" é um canivete suí
 </details>
 
 ## Executando comandos e explorando um container
+
+Agora que já aprendemos a como obter imagens da web, colocá-las para rodar como containers e expôr-las para outros hosts, está na hora de aprendermos algumas operações para interagirmos com o interior deste container. Você pode baixar uma imagem do _httpd_ como fizemos e ela estará executando da forma que foi criada pelo mantenedor da imagem, mas e caso queiramos interagir com os arquivos que estão dentro dela durante sua execução? E se quisermos que esse container faça uma atividade diferente do que foi originalmente projetado, mas utilizando os arquivos já existente? Para isso, nós podemos utilizar o comando "docker exec", onde iremos especificar o container que iremos interagir e o comando a ser executado. Por exemplo, caso queiramos abrir um shell para interagirmos com o container apache2-teste que criamos, podemos rodar o comando abaixo:
+
+> sudo docker exec -it apache2-teste bash
+
+Observe que nesse comando utilizamos o nome do nosso container (_apache2-teste_), o nome do comando a ser executado (_bash_, mas poderia ser _sh_ também), além de 2 flags: _-i_ que indica que o comando deverá ser executado de forma interativa, e _-t_ que indica que deve ser alocado um Terminal virtual (tty) para que possamos ter os recursos de I/O disponíveis para interagirmos com esse comando.
+
+Ao executar esse comando, você perceberá que o seu usuário será mudado para _root_ e que o hostname se tornará o "Container ID" do container criado, indicando que nesse momento o nosso terminal está conectado ao Shell de dentro do container. Você pode usar os comandos padrões do Linux para navegar pelas pastas, ver sua pasta atual e modificar arquivos, mas esteja ciente de uma coisa: Embora estejamos interagindo com um container em execução, as alterações são escritas de forma volátil em um espaço de disco que é apagado após o termino de sua execução, portanto quaisquer modificações realizadas serão perdidas quando o container passar para o estado de "Exited". Para sair do terminal do container, você pode utilizar o comando "exit".
+
+Nós também podemos obter informações da execução do nosso container através dos logs ou saídas do programa principal que são produzidos, sendo um recurso mais interessante para ambientes onde diversos containers estão em execução. Para isso, podemos utilizar o comando "docker logs". Esse comando aceita um argumento interessante que é o _-f_, se você não está familiarizado com o comando _tail -f_, esse argumento faz com que o terminal fique aguardando e imprimindo as atualizações de um arquivo conforme novo conteúdo é adicionado nele, muito útil para acompanhar logs. Neste exemplo, podemos acompanhar os logs do nosso container com o seguinte comando:
+
+> sudo docker logs -f apache2-teste
+
+Deixe esse comando rodando em um terminal e abra um novo, depois tente responder à pergunta abaixo. Para sair da execução do comando, você deve utilizar a combinação de teclas "CRTL+C"
+
+PERGUNTA: De outro terminal, tente rodar o comando "wget 127.0.0.1" para baixar a página "index.html" padrão do container. O que aconteceu no terminal que estamos acompanhando os logs?
+> <details>
+  >  <summary> Resposta </summary>
+  >  O terminal atualizou com os logs das requisições que realizamos, portanto o podemos acompanhar a execução de um container de fora dele!
+</details>
+
+Por fim, e se quisermos iniciar um serviço em um container, mas sem precisar reiniciar a operação do container? Se você está um pouco familiarizado com o gerenciamento de processos no Unix, é possível enviarmos alguns sinais específicos para os processos para que eles executem operações específicas. Para isso, utilizamos o comando _kill_ e definimos qual sinal queremos mandar para o processo. Alguns serviços, como o Apache2 e o Squid, realizam o procedimento de reinicialização quando recebem um sinal de _Hang Up_ (_SIGHUP_), por exemplo. Nós podemos enviar sinais para o processo principal do nosso container (o processo 1) utilizando o comando "docker kill". Na verdade, quando executamos o comando "docker stop" em um container, na verdade o docker está enviando um sinal _SIGTERM_ para que o processo seja finalizado de forma amigável (isso é, termine os processos de execução sem interrupções bruscas) com um período de tolerância máxima para o processo encerrar sua execução. Caso o processo não encerre dentro do tempo de tolerância (_grace period_), então um _SIGKILL_ (o famoso _kill -9_) é enviado, forçando o processo parar imediatamente. Caso nenhum parâmetro seja passado, o sinal padrão enviado é o _SIGKILL_, portanto para reiniciar o nosso serviço dentro do container, devemos utilizar o _SIGHUP_ conforme abaixo:
+
+> docker kill -s HUP apache2_teste
+
+PERGUNTA: tente verificar os logs do container com os comandos que aprendemos antes. O que é exibido no log?
+> <details>
+  >  <summary> Resposta </summary>
+  >  Usando o "docker logs apache2_teste", vemos que o processo principal recebeu um sinal de _Hang Up_ e que portanto reiniciou sua execução. Então podemos reiniciar um serviço em um container sem precisar matar o processo principal e, consequentemente, o container!
+</details>
+
+## Resumo do aprendizado e próximos passos
+
+Nesse primeiro exercício fomos introduzidos ao mundo dos containers utilizando docker! Aprendemos a como obter imagens de containers e gerenciá-las, aprendemos a iniciar, parar, reiniciar e remover nossos containers, além de termos aprendido a como expor nosso containers para outros hosts! Por fim, também aprendemos mais algumas técnicas para interagirmos e acompanharmos a execução do nosso container criado, com a cereja do bolo ter sido aprendermos a como interagir com o processo principal do nosso container sem precisar encerrar sua execução utilizando o comando "docker kill"!
+
+Esse primeiro exercício introdutório fica por aqui! No próximo exercício iremos aprender a como trabalhar com Volumes nos nossos containers, para que as informações possam ser guardadas após o término de execução de um container, além de iniciarmos containers com os conteúdos que queremos!
+
